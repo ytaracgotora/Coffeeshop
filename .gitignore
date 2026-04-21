@@ -1,0 +1,8 @@
+# EF Migrations Bundles
+efbundle
+efbundle.exe
+
+# Build outputs
+bin/
+obj/
+publish/
