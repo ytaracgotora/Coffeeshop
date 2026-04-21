@@ -1,0 +1,14 @@
+C:\Users\ytara\source\repos\CoffeeShop\CoffeeLoadTest\obj\Debug\net10.0\CoffeeLoadTest.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ytara\source\repos\CoffeeShop\CoffeeLoadTest\obj\Debug\net10.0\CoffeeLoadTest.AssemblyInfoInputs.cache
+C:\Users\ytara\source\repos\CoffeeShop\CoffeeLoadTest\obj\Debug\net10.0\CoffeeLoadTest.AssemblyInfo.cs
+C:\Users\ytara\source\repos\CoffeeShop\CoffeeLoadTest\obj\Debug\net10.0\CoffeeLoadTest.csproj.CoreCompileInputs.cache
+C:\Users\ytara\source\repos\CoffeeShop\CoffeeLoadTest\bin\Debug\net10.0\CoffeeLoadTest.exe
+C:\Users\ytara\source\repos\CoffeeShop\CoffeeLoadTest\bin\Debug\net10.0\CoffeeLoadTest.deps.json
+C:\Users\ytara\source\repos\CoffeeShop\CoffeeLoadTest\bin\Debug\net10.0\CoffeeLoadTest.runtimeconfig.json
+C:\Users\ytara\source\repos\CoffeeShop\CoffeeLoadTest\bin\Debug\net10.0\CoffeeLoadTest.dll
+C:\Users\ytara\source\repos\CoffeeShop\CoffeeLoadTest\bin\Debug\net10.0\CoffeeLoadTest.pdb
+C:\Users\ytara\source\repos\CoffeeShop\CoffeeLoadTest\obj\Debug\net10.0\CoffeeLoadTest.dll
+C:\Users\ytara\source\repos\CoffeeShop\CoffeeLoadTest\obj\Debug\net10.0\refint\CoffeeLoadTest.dll
+C:\Users\ytara\source\repos\CoffeeShop\CoffeeLoadTest\obj\Debug\net10.0\CoffeeLoadTest.pdb
+C:\Users\ytara\source\repos\CoffeeShop\CoffeeLoadTest\obj\Debug\net10.0\CoffeeLoadTest.genruntimeconfig.cache
+C:\Users\ytara\source\repos\CoffeeShop\CoffeeLoadTest\obj\Debug\net10.0\ref\CoffeeLoadTest.dll

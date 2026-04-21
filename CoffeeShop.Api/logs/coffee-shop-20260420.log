@@ -1,0 +1,41 @@
+2026-04-20 13:43:33.967 [DBG] Hosting starting
+2026-04-20 13:43:34.089 [INF] User profile is available. Using 'C:\Users\ytara\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-04-20 13:43:34.109 [DBG] Reading data from file 'C:\Users\ytara\AppData\Local\ASP.NET\DataProtection-Keys\key-435a55c9-4f1d-4e01-bbfb-b4b75e12887d.xml'.
+2026-04-20 13:43:34.163 [DBG] Reading data from file 'C:\Users\ytara\AppData\Local\ASP.NET\DataProtection-Keys\key-6f27f3e7-d67e-4299-8115-0b8dc23d8a18.xml'.
+2026-04-20 13:43:34.205 [DBG] Found key {435a55c9-4f1d-4e01-bbfb-b4b75e12887d}.
+2026-04-20 13:43:34.232 [DBG] Found key {6f27f3e7-d67e-4299-8115-0b8dc23d8a18}.
+2026-04-20 13:43:34.248 [DBG] Considering key {435a55c9-4f1d-4e01-bbfb-b4b75e12887d} with expiration date 2026-06-12 05:19:07Z as default key.
+2026-04-20 13:43:34.259 [DBG] Forwarded activator type request from Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor, Microsoft.AspNetCore.DataProtection, Version=9.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60 to Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor, Microsoft.AspNetCore.DataProtection, Culture=neutral, PublicKeyToken=adb9793829ddae60
+2026-04-20 13:43:34.274 [DBG] Decrypting secret element using Windows DPAPI.
+2026-04-20 13:43:34.282 [DBG] Forwarded activator type request from Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel.AuthenticatedEncryptorDescriptorDeserializer, Microsoft.AspNetCore.DataProtection, Version=9.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60 to Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel.AuthenticatedEncryptorDescriptorDeserializer, Microsoft.AspNetCore.DataProtection, Culture=neutral, PublicKeyToken=adb9793829ddae60
+2026-04-20 13:43:34.291 [DBG] Opening CNG algorithm 'AES' from provider 'null' with chaining mode CBC.
+2026-04-20 13:43:34.300 [DBG] Opening CNG algorithm 'SHA256' from provider 'null' with HMAC.
+2026-04-20 13:43:34.304 [DBG] Using key {435a55c9-4f1d-4e01-bbfb-b4b75e12887d} as the default key.
+2026-04-20 13:43:34.309 [DBG] Key ring with default key {435a55c9-4f1d-4e01-bbfb-b4b75e12887d} was loaded during application startup.
+2026-04-20 13:43:34.531 [DBG] Middleware configuration started with options: {AllowedHosts = *, AllowEmptyHosts = True, IncludeFailureMessage = True}
+2026-04-20 13:43:34.537 [DBG] Wildcard detected, all requests with hosts will be allowed.
+2026-04-20 13:43:34.740 [ERR] Hosting failed to start
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5298: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ ---> System.Net.Sockets.SocketException (10048): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)

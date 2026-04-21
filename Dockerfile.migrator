@@ -1,0 +1,8 @@
+# Use a slim runtime since the bundle is self-contained
+FROM mcr.microsoft.com/dotnet/sdk:10.0
+WORKDIR /app
+COPY efbundle .
+RUN chmod +x efbundle
+
+# We use 'sh -c' to ensure the environment variable is expanded correctly
+ENTRYPOINT ["sh", "-c", "./efbundle --connection \"$DB_CONNECTION\""]

@@ -1,0 +1,39 @@
+name: ☕ Coffee Shop Cloud Deployment
+
+on:
+  push:
+    branches: [main] # Runs every time you push to the main branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏁 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🔑 Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: 🏗️ Build Migration Bundle
+        run: |
+          dotnet tool install --global dotnet-ef
+          dotnet ef migrations bundle --project CoffeeShop.Shared --startup-project CoffeeShop.Api --self-contained -r linux-x64 -o efbundle --force
+
+      - name: 🐳 Build & Push Images to ACR
+        run: |
+          # This builds the API, Worker, and the Migrator using your existing Dockerfiles
+          az acr build --registry ${{ secrets.ACR_NAME }} --image coffee-api:${{ github.sha }} -f CoffeeShop.Api/Dockerfile .
+          az acr build --registry ${{ secrets.ACR_NAME }} --image coffee-worker:${{ github.sha }} -f CoffeeShop.Worker/Dockerfile .
+          az acr build --registry ${{ secrets.ACR_NAME }} --image coffee-migrator:${{ github.sha }} -f Dockerfile.migrator .
+
+      - name: 🚜 Run Database Migrations
+        run: |
+          # This tells Azure to run the 'Migrator' container once to update the DB
+          az containerapp job start --name coffee-db-migrator --resource-group CoffeeShop_RG
+
+      - name: 🚀 Update API & Worker
+        run: |
+          az containerapp update --name coffee-shop-api --resource-group CoffeeShop_RG --image ${{ secrets.ACR_NAME }}.azurecr.io/coffee-api:${{ github.sha }}
+          az containerapp update --name coffee-shop-worker --resource-group CoffeeShop_RG --image ${{ secrets.ACR_NAME }}.azurecr.io/coffee-worker:${{ github.sha }}

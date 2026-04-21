@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="CoffeeShop.Api/CoffeeShop.Api.csproj" />
+  <Project Path="CoffeeShop.Shared/CoffeeShop.Shared.csproj" />
+  <Project Path="CoffeeShop.Worker/CoffeeShop.Worker.csproj" />
+  <Project Path="CoffeeLoadTest/CoffeeLoadTest.csproj" />
+   <Project Path="CoffeeBenchMark/CoffeeBenchMark.csproj" />
+</Solution>

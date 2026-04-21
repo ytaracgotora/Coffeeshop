@@ -1,0 +1,62 @@
+
+Invoke-RestMethod -Uri http://localhost:5298/order `
+  -Method Post `
+  -Headers @{ Authorization = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NzY3MDgwMzUsImlzcyI6IkNvZmZlZVNob3BBcGkiLCJhdWQiOiJDb2ZmZWVTaG9wQ3VzdG9tZXJzIn0.--8aY3zWtKNO-jB7quQW_3m9ewB9V77ASF3wTXEaaxU" }`
+  -ContentType "application/json" `
+  -Body '{"Customer": "DockerDev", "Details": "Drink:Americano"}`
+
+  $ curl http://localhost:5298/login
+{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NzY3MDgwMzUsImlzcyI6IkNvZmZlZVNob3BBcGkiLCJhdWQiOiJDb2ZmZWVTaG9wQ3VzdG9tZXJzIn0.--8aY3zWtKNO-jB7quQW_3m9ewB9V77ASF3wTXEaaxU"}
+
+
+# Initialize the repository
+git init -b main
+
+# Add all project files
+git add .
+
+# Create the first commit with a professional message
+git commit -m "feat: initial coffee shop architecture with Docker and GitHub Actions"
+
+
+# Common providers for Web Apps, SQL, KeyVault, and Monitoring
+providers=(
+  "Microsoft.DBforPostgreSQL"
+  "Microsoft.ContainerRegistry"
+  "Microsoft.Web"
+  "Microsoft.KeyVault"
+  "Microsoft.Network"
+  "Microsoft.Compute"
+  "Microsoft.Storage"
+)
+
+for provider in "${providers[@]}"; do
+  echo "Registering $provider..."
+  az provider register --namespace "$provider"
+done
+
+
+# 1. Define Variables
+export RG_NAME="CoffeeShop_RG"
+export LOCATION="eastus"
+export ACR_NAME="coffeeshopreg$(date +%s)" # Generates a unique timestamped name
+
+# 2. Create the Resource Group
+az group create --name $RG_NAME --location $LOCATION
+
+    az provider register --namespace Microsoft.ContainerRegistry
+
+# 3. Create the Azure Container Registry
+az acr create --resource-group $RG_NAME --name $ACR_NAME --sku Basic
+
+# 4. Create the Managed Postgres Server
+# Replace <YourPassword> with a strong password
+az postgres flexible-server create \
+  --resource-group "CoffeeShop_RG" \
+  --name "coffeeshop-db-$(date +%s)" \
+  --location $LOCATION \
+  --admin-user postgres \
+  --admin-password "Pg4Cf$@AzCl" \
+  --sku-name Standard_B1ms \
+  --tier Burstable \
+  --yes

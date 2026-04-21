@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: CoffeeDB
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    # 🔥 SENIOR MOVE: Checks if the basement is actually ready for connections
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  migrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.migrator
+    environment:
+      # Pass the connection string directly to the efbundle
+      - DB_CONNECTION=Host=db;Database=CoffeeDB;Username=postgres;Password=postgres
+    depends_on:
+      db:
+        condition: service_healthy # Wait for the 'pg_isready' bell to ring
+
+  api:
+    build:
+      context: .
+      dockerfile: CoffeeShop.Api/Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=db;Database=CoffeeDB;Username=postgres;Password=postgres;Maximum Pool Size=40
+    ports:
+      - "5298:8080"
+    depends_on:
+      migrator:
+        condition: service_completed_successfully # API waits for migrations to finish
+
+  worker:
+    build:
+      context: .
+      dockerfile: CoffeeShop.Worker/Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=db;Database=CoffeeDB;Username=postgres;Password=postgres;Maximum Pool Size=40
+    depends_on:
+      migrator:
+        condition: service_completed_successfully # Worker waits for migrations to finish
