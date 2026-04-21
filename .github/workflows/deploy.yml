@@ -10,7 +10,7 @@ jobs:
     # 🔥 SENIOR MOVE: Opt-in to the latest Node runtime to stay ahead of deprecations
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
-      
+
     steps:
       - name: 🏁 Checkout Code
         uses: actions/checkout@v4
@@ -29,7 +29,14 @@ jobs:
         run: |
           dotnet tool install --global dotnet-ef
           export PATH="$PATH:$HOME/.dotnet/tools"
-          dotnet ef migrations bundle --project CoffeeShop.Shared --startup-project CoffeeShop.Api --self-contained -r linux-x64 -o efbundle --force
+
+            # 🔥 SENIOR MOVE: Force a clean restore to wipe out the Windows-style asset paths
+          dotnet restore CoffeeShop.Shared/CoffeeShop.Shared.csproj
+            
+            dotnet ef migrations bundle \
+            --project CoffeeShop.Shared \
+            --startup-project CoffeeShop.Api \
+            --self-contained -r linux-x64 -o efbundle --force
 
       - name: 🐳 Build & Push Images to ACR
         run: |
