@@ -7,6 +7,10 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    # 🔥 SENIOR MOVE: Opt-in to the latest Node runtime to stay ahead of deprecations
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
+      
     steps:
       - name: 🏁 Checkout Code
         uses: actions/checkout@v4
