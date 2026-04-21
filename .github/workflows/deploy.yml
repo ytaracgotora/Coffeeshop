@@ -1,10 +1,18 @@
+name: ☕ Coffee Shop Cloud Deployment
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
     steps:
       - name: 🏁 Checkout Code
         uses: actions/checkout@v4
 
-      # 🔥 SENIOR MOVE: Install the specific SDK needed for the build
       - name: 🛠️ Setup .NET 10
-        uses: actions/setup-dotnet@v4
+        uses: azure/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
 
@@ -16,6 +24,16 @@
       - name: 🏗️ Build Migration Bundle
         run: |
           dotnet tool install --global dotnet-ef
-          # We add the 'export PATH' to make sure the runner can find 'dotnet-ef' immediately
           export PATH="$PATH:$HOME/.dotnet/tools"
           dotnet ef migrations bundle --project CoffeeShop.Shared --startup-project CoffeeShop.Api --self-contained -r linux-x64 -o efbundle --force
+
+      - name: 🐳 Build & Push Images to ACR
+        run: |
+          az acr build --registry ${{ secrets.ACR_NAME }} --image coffee-api:${{ github.sha }} -f CoffeeShop.Api/Dockerfile .
+          az acr build --registry ${{ secrets.ACR_NAME }} --image coffee-worker:${{ github.sha }} -f CoffeeShop.Worker/Dockerfile .
+          az acr build --registry ${{ secrets.ACR_NAME }} --image coffee-migrator:${{ github.sha }} -f Dockerfile.migrator .
+
+      # This assumes you created the ACA Job named 'coffee-db-migrator' earlier
+      - name: 🚜 Run Database Migrations
+        run: |
+          az containerapp job start --name coffee-db-migrator --resource-group CoffeeShop_RG
