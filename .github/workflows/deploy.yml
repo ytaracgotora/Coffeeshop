@@ -7,13 +7,17 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    # 🔥 SENIOR MOVE: Opt-in to the latest Node runtime to stay ahead of deprecations
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
 
     steps:
       - name: 🏁 Checkout Code
         uses: actions/checkout@v4
+
+      # 🔥 SENIOR MOVE: Manually wipe out any Windows 'obj' or 'bin' folders 
+      # that were accidentally committed. This solves the MSB4018 error.
+      - name: 🧹 Clean Artifacts
+        run: find . -type d -name "obj" -exec rm -rf {} +; find . -type d -name "bin" -exec rm -rf {} +
 
       - name: 🛠️ Setup .NET 10
         uses: actions/setup-dotnet@v4
@@ -30,10 +34,10 @@ jobs:
           dotnet tool install --global dotnet-ef
           export PATH="$PATH:$HOME/.dotnet/tools"
 
-            # 🔥 SENIOR MOVE: Force a clean restore to wipe out the Windows-style asset paths
-          dotnet restore CoffeeShop.Shared/CoffeeShop.Shared.csproj
-            
-            dotnet ef migrations bundle \
+          # 🔥 SENIOR MOVE: Restore the entire solution so all projects are ready
+          dotnet restore
+          
+          dotnet ef migrations bundle \
             --project CoffeeShop.Shared \
             --startup-project CoffeeShop.Api \
             --self-contained -r linux-x64 -o efbundle --force
@@ -44,7 +48,6 @@ jobs:
           az acr build --registry ${{ secrets.ACR_NAME }} --image coffee-worker:${{ github.sha }} -f CoffeeShop.Worker/Dockerfile .
           az acr build --registry ${{ secrets.ACR_NAME }} --image coffee-migrator:${{ github.sha }} -f Dockerfile.migrator .
 
-      # This assumes you created the ACA Job named 'coffee-db-migrator' earlier
       - name: 🚜 Run Database Migrations
         run: |
           az containerapp job start --name coffee-db-migrator --resource-group CoffeeShop_RG
