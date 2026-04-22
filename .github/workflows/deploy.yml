@@ -8,14 +8,12 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # Stay ahead of deprecations
 
     steps:
       - name: 🏁 Checkout Code
         uses: actions/checkout@v4
 
-      # 🔥 SENIOR MOVE: Manually wipe out any Windows 'obj' or 'bin' folders 
-      # that were accidentally committed. This solves the MSB4018 error.
       - name: 🧹 Clean Artifacts
         run: find . -type d -name "obj" -exec rm -rf {} +; find . -type d -name "bin" -exec rm -rf {} +
 
@@ -33,16 +31,10 @@ jobs:
         run: |
           dotnet tool install --global dotnet-ef
           export PATH="$PATH:$HOME/.dotnet/tools"
-
-          # 🔥 SENIOR MOVE: Restore the entire solution so all projects are ready
           dotnet restore
-          
-          dotnet ef migrations bundle \
-            --project CoffeeShop.Shared \
-            --startup-project CoffeeShop.Api \
-            --self-contained -r linux-x64 -o efbundle --force
+          dotnet ef migrations bundle --project CoffeeShop.Shared --startup-project CoffeeShop.Api --self-contained -r linux-x64 -o efbundle --force
 
-      - name: 🐳 Build & Push Images to ACR
+      - name: 🐳 Build & Push Images
         run: |
           az acr build --registry ${{ secrets.ACR_NAME }} --image coffee-api:${{ github.sha }} -f CoffeeShop.Api/Dockerfile .
           az acr build --registry ${{ secrets.ACR_NAME }} --image coffee-worker:${{ github.sha }} -f CoffeeShop.Worker/Dockerfile .

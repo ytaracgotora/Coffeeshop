@@ -86,3 +86,43 @@ az containerapp job create \
   --trigger-type "Manual" \
   --replica-timeout 300 \
   --image :mcr.microsoft.com/dotnet/sdk:10.0
+
+
+
+Copilot Search Branding
+
+Like
+
+Dislike
+How to Get a PostgreSQL Connection Password in Azure Portal
+If you need the password for a PostgreSQL connection in Azure, you can retrieve it in two main ways — either by viewing the connection string in the Azure Portal or by using the Azure CLI.
+
+1. View the Connection String in Azure Portal
+Go to the Azure Portal and navigate to your Azure Database for PostgreSQL resource.
+
+Under Settings, click Service Connector.
+
+Select the connection you created (e.g., for Azure App Service or another compute service).
+
+In the Sample Code or Connection Details section, you’ll see:
+Server=<server>.postgres.database.azure.com;
+Database=<database-name>;
+Port=5432;
+Ssl Mode=Require;
+User Id=<username>;
+Password=<password>;
+<password>Microsoft Learn+1
+Note:
+
+If you used managed identity authentication, the password field will be blank — you should use the managed identity token instead Microsoft Learn+1.
+
+If you used connection string authentication, the password is visible in the connection string.
+
+2. Retrieve via Azure CLI
+If you prefer CLI, you can get the connection string (and password) programmatically:
+
+az postgres server connection-string show \
+  --resource-group CoffeeShop_RG \
+  --server <your-server-name> \
+  --connection-name <connection-name> \
+  --query "connectionString" --output tsv
