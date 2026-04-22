@@ -1,0 +1,87 @@
+The Coffee Shop Architecture: From Ground to Cloud
+Phase 1: The Design (Shared Logic)
+The "Blueprints": Ensuring the Barista and Manager use the same recipes and logbooks.
+Initialize Solution:
+bash
+mkdir CoffeeShop && cd CoffeeShop
+dotnet new sln
+dotnet new classlib -o CoffeeShop.Shared
+dotnet sln add CoffeeShop.Shared
+Use code with caution.
+The Database Model (CoffeeShop.Shared/Data.cs):
+Order: The customer's request.
+OutboxMessage: The "Log Book" that ensures we don't forget to tell the kitchen.
+Design-Time Factory (CoffeeShop.Shared/CoffeeContextFactory.cs):
+Analogy: The "Emergency Manual" that lets us renovate the shop even when the power (API) is off.
+Phase 2: The Barista (Web API)
+Taking orders and writing to the Log Book (Outbox).
+Create API:
+bash
+dotnet new web -o CoffeeShop.Api
+dotnet sln add CoffeeShop.Api
+dotnet add CoffeeShop.Api reference CoffeeShop.Shared
+dotnet add CoffeeShop.Api package Microsoft.EntityFrameworkCore.Design
+dotnet add CoffeeShop.Api package EFCore.NamingConventions
+Use code with caution.
+Implementation (Program.cs):
+JWT Security: The "VIP Badge" checker.
+Rate Limiting: The "Bouncer" preventing the morning rush from crashing the shop.
+Span Parsing: The "Memory-Efficient" way to read order details without wasting paper (heap memory).
+Phase 3: The Manager (Worker Service)
+The "Push-Pull" Expert: Watching the Log Book and notifying the Kitchen.
+Create Worker:
+bash
+dotnet new worker -o CoffeeShop.Worker
+dotnet sln add CoffeeShop.Worker
+dotnet add CoffeeShop.Worker reference CoffeeShop.Shared
+Use code with caution.
+Implementation (OutboxProcessor.cs):
+Postgres LISTEN/NOTIFY: The "Bell" that rings when a new order is added.
+Transaction Reliability: Marks the log book only after the kitchen is notified.
+Phase 4: Local Operations (Docker)
+Building the shop in a portable container.
+Dockerfiles: Standardized builds for Api and Worker using .NET 10.
+docker-compose.yml:
+Starts Postgres (The Basement).
+Starts The Migrator (Construction Crew).
+Starts the Api and Worker.
+Verify Local Tables:
+bash
+docker exec -it coffeeshop-db-1 psql -U postgres -d CoffeeDB -c "\dt"
+Use code with caution.
+Phase 5: The Global Expansion (Cloud & CI/CD)
+Moving the shop to Azure via GitHub Actions.
+Azure Infrastructure (Bash Script):
+bash
+# 1. Create Resource Group & Registry
+az group create --name CoffeeShop_RG --location eastus
+az acr create --resource-group CoffeeShop_RG --name coffeeshopreg$RANDOM --sku Basic
+
+# 2. Create the Cloud Basement (Managed Postgres)
+az postgres flexible-server create --resource-group CoffeeShop_RG \
+  --name coffeeshop-db-server --admin-user postgres --admin-password "P@ssword123!" --yes
+
+# 3. Create the Kitchen (Container Apps)
+az containerapp env create --name coffee-shop-env --resource-group CoffeeShop_RG --location eastus
+Use code with caution.
+The CI/CD Pipeline (.github/workflows/deploy.yml):
+Build: Generates the Migration Bundle (efbundle).
+Push: Uploads images to ACR.
+Execute: Runs the coffee-db-migrator job, then updates the API.
+Phase 6: The "Senior" Verification Tools
+How to prove the shop is running perfectly.
+Load Test:
+bash
+dotnet run --project CoffeeLoadTest # Sends 100 simultaneous orders
+Use code with caution.
+Memory Proof:
+bash
+dotnet run -c Release --project CoffeeBench # Proves Span is 2.5x faster
+Use code with caution.
+Log Analysis:
+bash
+grep -E "Error|Fail" logs/*.log # Scanning for "silent killers"
+Use code with caution.
+🛑 Ready for the Reset?
+We will now take a break. When you are ready to start "The Clean Build," we will follow this document to recreate the entire system.
+Proactive Follow-up: Should we start the "Fresh Start" by creating the GitHub

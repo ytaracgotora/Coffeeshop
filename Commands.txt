@@ -60,3 +60,29 @@ az postgres flexible-server create \
   --sku-name Standard_B1ms \
   --tier Burstable \
   --yes
+
+
+# 1. Create the API Barista
+az containerapp create \
+  --name coffee-shop-api \
+  --resource-group $RG_NAME \
+  --environment coffee-shop-env \
+  --image :mcr.microsoft.com/dotnet/sdk:10.0 \
+  --target-port 8080 \
+  --ingress 'external'
+
+# 2. Create the Worker Manager
+az containerapp create \
+  --name coffee-shop-worker \
+  --resource-group $RG_NAME \
+  --environment coffee-shop-env \
+  --image :mcr.microsoft.com/dotnet/sdk:10.0
+
+# 3. Create the Migrator Job (Fixing the timeout error)
+az containerapp job create \
+  --name coffee-db-migrator \
+  --resource-group $RG_NAME \
+  --environment coffee-shop-env \
+  --trigger-type "Manual" \
+  --replica-timeout 300 \
+  --image :mcr.microsoft.com/dotnet/sdk:10.0
